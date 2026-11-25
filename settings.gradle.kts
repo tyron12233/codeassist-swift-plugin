@@ -1,4 +1,5 @@
-rootProject.name = "codeassist-swift-plugin"
+// The APK file names come from this (`swift-plugin-<abi>-release.apk`), which the release workflow expects.
+rootProject.name = "swift-plugin"
 
 pluginManagement {
     repositories {

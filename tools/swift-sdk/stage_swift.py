@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stage a Swift toolchain that RUNS ON an Android device, for the Swift plugin (samples/swift-plugin): one ABI per run.
+"""Stage a Swift toolchain that RUNS ON an Android device, for the Swift plugin (this repository): one ABI per run.
 
 Apple publishes no Swift that runs on Android. Termux does: its `swift` package is the upstream compiler built against
 bionic, with the runtime and Foundation for Android beside it. This script takes the packages pinned in packages.lock

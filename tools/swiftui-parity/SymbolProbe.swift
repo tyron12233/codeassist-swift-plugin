@@ -1,7 +1,7 @@
 // SF Symbol metrics, from iOS itself: for every symbol name in names.txt (bundled with the app; the Mac's
 // CoreGlyphs name_availability.plist), the frame of its image at each Dynamic Type point size, regular weight, medium
 // scale. Sizes only: no artwork leaves the Simulator. Written to <Documents>/symbol-metrics.tsv, which becomes
-// samples/swift-plugin/swiftui/symbol-metrics.tsv (the engine reads it; sizes between those measured interpolate).
+// swiftui/symbol-metrics.tsv (the engine reads it; sizes between those measured interpolate).
 
 import UIKit
 

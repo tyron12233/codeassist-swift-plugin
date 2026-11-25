@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build CodeAssist's SwiftUI engine (samples/swift-plugin/swiftui) as a library for the device: libSwiftUI.so and the
+# Build CodeAssist's SwiftUI engine (swiftui/) as a library for the device: libSwiftUI.so and the
 # module `SwiftUI`, so a preview compiles only the user's code against it (about 0.1 s on the emulator instead of
 # 2.9 s with the engine's source) and the user's `import SwiftUI` finds it.
 #
@@ -70,12 +70,12 @@ swiftc -target "$TARGET" -sdk "$SDK" -resource-dir "$SDK/usr/lib/swift" \
     -emit-library -parse-as-library -O \
     -use-ld=lld -L "$JNI" -L "$WORK/stubs" -Xclang-linker -nostdlib \
     -Xlinker -soname -Xlinker libSwiftUI.so -Xlinker -rpath -Xlinker '$ORIGIN' \
-    "$REPO"/samples/swift-plugin/swiftui/Sources/*.swift -o libSwiftUI.so 2>&1 | grep -v 'warning:' | grep -E 'error' && exit 1 || true
+    "$REPO"/swiftui/Sources/*.swift -o libSwiftUI.so 2>&1 | grep -v 'warning:' | grep -E 'error' && exit 1 || true
 [[ -f libSwiftUI.so ]] || { echo "the build produced no libSwiftUI.so" >&2; exit 1; }
 
 cp libSwiftUI.so "$JNI/"
 mkdir -p "$SDK/swiftui"
 cp SwiftUI.swiftmodule SwiftUI.swiftinterface SwiftUI.swiftdoc "$SDK/swiftui/"
 # SF Symbol frames per point size, measured from iOS (tools/swiftui-parity/SymbolProbe.swift), which the engine reads.
-cp "$REPO/samples/swift-plugin/swiftui/symbol-metrics.tsv" "$SDK/swiftui/"
+cp "$REPO/swiftui/symbol-metrics.tsv" "$SDK/swiftui/"
 echo "==> done: $JNI/libSwiftUI.so ($(du -h libSwiftUI.so | cut -f1)), $SDK/swiftui/"

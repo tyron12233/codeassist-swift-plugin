@@ -14,7 +14,7 @@
 # Usage: ./build_symbols.sh
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-OUT="$HERE/../../../samples/swift-plugin/src/main/assets/symbols"
+OUT="$HERE/../../../src/main/assets/symbols"
 PY="${FONTTOOLS_PYTHON:-python3}"
 COMMIT=10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7
 BASE="https://raw.githubusercontent.com/google/material-design-icons/$COMMIT"

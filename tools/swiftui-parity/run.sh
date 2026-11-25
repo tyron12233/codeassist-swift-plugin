@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SwiftUI parity: real SwiftUI (iOS Simulator) vs CodeAssist's engine (samples/swift-plugin/swiftui), per case of
+# SwiftUI parity: real SwiftUI (iOS Simulator) vs CodeAssist's engine (swiftui/), per case of
 # Cases.swift. Needs Xcode and a booted iPhone Simulator (the canvas is the iPhone 17 Pro's 402x874 points).
 #
 #   ./run.sh            build both sides, capture the reference, compare: prints the share of differing pixels per case
@@ -10,7 +10,7 @@
 # Output in $OUT (default /tmp/parity): ref/<case>.png, out/<case>.png (reference | ours | difference).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-ENGINE="$HERE/../../samples/swift-plugin/swiftui/Sources"
+ENGINE="$HERE/../../swiftui/Sources"
 OUT="${OUT:-/tmp/parity}"
 mkdir -p "$OUT"
 
@@ -56,4 +56,4 @@ if ! swiftc -parse-as-library -module-name Ours -O "$ENGINE"/*.swift "$HERE/Case
     echo "Cases.swift does not compile against the engine (API gap): see above" >&2
     exit 1
 fi
-CODEASSIST_SYMBOL_METRICS="$HERE/../../samples/swift-plugin/swiftui/symbol-metrics.tsv" "$OUT/ours" "$OUT/ref" "$OUT/out"
+CODEASSIST_SYMBOL_METRICS="$HERE/../../swiftui/symbol-metrics.tsv" "$OUT/ours" "$OUT/ref" "$OUT/out"
