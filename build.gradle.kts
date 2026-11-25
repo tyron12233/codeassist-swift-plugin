@@ -12,6 +12,9 @@ import java.security.MessageDigest
 import java.util.Properties
 
 plugins {
+    // Puts the Kotlin Gradle plugin on the classpath at CodeAssist's Kotlin version; AGP's built-in Kotlin
+    // compiles with it. The SPI jars carry that version's metadata, which an older compiler rejects.
+    alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.android.application)
     // The UI facet's SwiftUI preview pane is a @Composable.
     alias(libs.plugins.kotlin.compose)
@@ -126,13 +129,16 @@ base { archivesName.set("swift-plugin-$swiftAbi") }
 tasks.withType<Test>().configureEach { useJUnitPlatform() }
 
 dependencies {
+    // The SPI and the Kotlin, coroutines and Compose versions the IDE provides, as one coordinate.
+    compileOnly(platform(libs.codeassist.plugin.bom))
+    testImplementation(platform(libs.codeassist.plugin.bom))
     // Compiled against, never bundled: the IDE's classloader is the parent of the plugin's.
-    compileOnly(project(":plugin-api"))
-    compileOnly(project(":plugin-ui-api"))
-    compileOnly(project(":build-api"))
-    compileOnly(project(":language-api"))
-    compileOnly(project(":lsp-api"))
-    compileOnly(project(":project-model-api"))
+    compileOnly("com.github.tyron12233.CodeAssist:plugin-api")
+    compileOnly("com.github.tyron12233.CodeAssist:plugin-ui-api")
+    compileOnly("com.github.tyron12233.CodeAssist:build-api")
+    compileOnly("com.github.tyron12233.CodeAssist:language-api")
+    compileOnly("com.github.tyron12233.CodeAssist:lsp-api")
+    compileOnly("com.github.tyron12233.CodeAssist:project-model-api")
     compileOnly(libs.kotlinx.coroutines.core)
 
     // The IDE's Compose, which the preview pane is composed by. Never bundled.
@@ -144,10 +150,15 @@ dependencies {
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platform.launcher)
-    testImplementation(project(":plugin-api"))
-    testImplementation(project(":build-api"))
-    testImplementation(project(":project-model-api"))
+    testImplementation("com.github.tyron12233.CodeAssist:plugin-api")
+    testImplementation("com.github.tyron12233.CodeAssist:build-api")
+    testImplementation("com.github.tyron12233.CodeAssist:project-model-api")
     testImplementation(libs.kotlinx.coroutines.core)
     // The Compose compiler insists on a runtime wherever it compiles, test sources included.
     testImplementation(libs.androidx.compose.runtime)
+}
+
+// As CodeAssist compiles its own Kotlin: against the JDK 17 API, which is what ART offers a plugin.
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions { freeCompilerArgs.add("-Xjdk-release=17") }
 }

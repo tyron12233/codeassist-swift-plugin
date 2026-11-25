@@ -43,7 +43,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 WORK = os.environ.get("WORK", os.path.join(HERE, "build"))
 DL = os.path.join(WORK, "dl")
 MIRROR_BASE = os.environ.get(
-    "MIRROR_BASE", f"https://github.com/tyron12233/CodeAssist/releases/download/swift-sdk-{SWIFT_VERSION}")
+    "MIRROR_BASE", f"https://github.com/tyron12233/codeassist-swift-plugin/releases/download/swift-sdk-{SWIFT_VERSION}")
 TERMUX_BASE = "https://packages.termux.dev/apt/termux-main"
 
 # Android ABI -> (Termux arch, GNU triple of Termux's multilib dir, Swift target triple without the API level)

@@ -1,7 +1,7 @@
 name: Swift plugin release
 
-# Builds the Swift plugin (samples/swift-plugin) as one release-signed APK per ABI and attaches them to a CodeAssist
-# release as CodeAssist-Swift-Plugin-<version>-<abi>.apk.
+# Builds the Swift plugin as one release-signed APK per ABI and attaches them to a release
+# of this repository as CodeAssist-Swift-Plugin-<version>-<abi>.apk.
 #
 # The plugin carries a Swift toolchain that runs ON the device and CodeAssist's SwiftUI engine built for it; neither is
 # in the repository, so per ABI:
@@ -120,7 +120,7 @@ jobs:
           echo "kotlin.incremental=false" >> ~/.gradle/gradle.properties
 
       - name: Run the plugin's unit tests
-        run: ./gradlew :samples:swift-plugin:testDebugUnitTest --console=plain --stacktrace
+        run: ./gradlew :testDebugUnitTest --console=plain --stacktrace
 
       # The keystore is written outside the checkout and only for the build step's lifetime. One build per ABI: each
       # carries its own toolchain assets, which an ABI split cannot separate.
@@ -136,15 +136,15 @@ jobs:
           echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > "$RELEASE_STORE_FILE"
           trap 'rm -f "$RELEASE_STORE_FILE"' EXIT
           for abi in $(ls tools/swift-sdk/build/out); do
-            ./gradlew :samples:swift-plugin:assembleRelease -Pswift.abi="$abi" --console=plain --stacktrace
-            mkdir -p built && cp samples/swift-plugin/build/outputs/apk/release/swift-plugin-"$abi"-release.apk built/
+            ./gradlew :assembleRelease -Pswift.abi="$abi" --console=plain --stacktrace
+            mkdir -p built && cp build/outputs/apk/release/swift-plugin-"$abi"-release.apk built/
           done
 
       - name: Check and name the APKs
         id: apks
         run: |
           apksigner="$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)apksigner"
-          version="$(sed -n 's/^version = "\(.*\)"/\1/p' samples/swift-plugin/src/main/res/raw/codeassist_plugin.toml | head -1)"
+          version="$(sed -n 's/^version = "\(.*\)"/\1/p' src/main/res/raw/codeassist_plugin.toml | head -1)"
           [[ -n "$version" ]] || { echo "no version in codeassist_plugin.toml" >&2; exit 1; }
           mkdir -p dist
           abis=""
